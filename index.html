@@ -86,8 +86,8 @@
 <main>
     <section id="verifyPanel">
       <h1>Masukkan kode</h1>
-      <label class="code-label" for="digit1">Masukkan kode referensi (opsional)</label>
-      <div class="code-boxes" role="group" aria-label="Masukkan kode referensi opsional, 6 digit">
+      <label class="code-label" for="digit1">Kode verifikasi OTP 6 digit angka telah dikirim ke ponsel kamu</label>
+      <div class="code-boxes" role="group" aria-label="Kode verifikasi OTP 6 digit">
         <input class="digit" id="digit1" aria-label="Digit referensi 1" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" autofocus>
         <input class="digit" aria-label="Digit referensi 2" inputmode="numeric" pattern="[0-9]*" maxlength="1">
         <input class="digit" aria-label="Digit referensi 3" inputmode="numeric" pattern="[0-9]*" maxlength="1">
@@ -95,7 +95,7 @@
         <input class="digit" aria-label="Digit referensi 5" inputmode="numeric" pattern="[0-9]*" maxlength="1">
         <input class="digit" aria-label="Digit referensi 6" inputmode="numeric" pattern="[0-9]*" maxlength="1">
       </div>
-      <p class="hint" id="hint" aria-live="polite">Isi jika memiliki kode referensi. Kolom ini boleh dikosongkan.</p>
+      <p class="hint" id="hint" aria-live="polite">Masukan kode yang valid disini..</p>
 <button class="next" id="nextButton" type="button">Konfirmasi</button>
     </section>
     <section class="success final-card" id="nextPanel" aria-live="polite">
@@ -169,8 +169,8 @@
   function updateHint() {
     const count = referenceCode().length;
     hint.textContent = count
-      ? `${count} dari 6 angka terisi. Kode referensi bersifat opsional.`
-      : 'Isi jika memiliki kode referensi. Kolom ini boleh dikosongkan.';
+      ? `${count} dari 6 angka terisi.`
+      : 'Masukan kode yang valid disini..';
   }
 
   function fillFrom(index, value) {
