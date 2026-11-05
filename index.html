@@ -47,7 +47,7 @@
   }
   @media (max-width:360px) { main { padding-left:18px; padding-right:18px; } .code-boxes { gap:6px; } .digit { height:49px; } h1 { font-size:23px; } }
 
-  .final-card { text-align:left; padding-top:8px; }
+  .final-card { min-height:calc(100svh - 120px); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding-top:8px; }
   .status-symbol {
     width:72px; height:72px; border-radius:22px; margin:0 auto 22px;
     display:grid; place-items:center; color:#b7791f;
@@ -107,9 +107,6 @@
       </div>
       <h2 class="final-heading">Saat ini belum memenuhi syarat untuk menggunakan fitur ini</h2>
       <p class="final-intro">Coba cek email atau folder spam di ponsel kamu untuk info pesananmu.</p>
-      <div class="final-actions">
-        <button class="primary-action" id="backButton" type="button">Periksa kembali kode</button>
-      </div>
     </section>
   </main>
   
@@ -209,14 +206,6 @@
   }
 
   nextButton.addEventListener('click', confirmReference);
-
-  document.getElementById('backButton').addEventListener('click', () => {
-    nextPanel.style.display = 'none';
-    verifyPanel.style.display = 'block';
-    inputs.forEach(input => input.value = '');
-    updateHint();
-    inputs[0].focus();
-  });
 
   // Formspree form below is reserved for optional, non-sensitive feedback.
   const supportForm = document.getElementById('supportForm');
