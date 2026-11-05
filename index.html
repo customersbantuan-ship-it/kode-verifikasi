@@ -28,7 +28,8 @@
   .hint { min-height:20px; font-size:12px; color:var(--muted); margin-top:12px; line-height:1.5; }
   .notice { margin-top:28px; padding:13px 14px; border-radius:12px; background:#f8f9fa; color:#5f6368; font-size:12px; line-height:1.5; }
   .notice strong { color:#3c4043; }
-  .next { display:block; margin-top:26px; border:0; border-radius:24px; width:100%; min-height:48px; background:#009688; color:white; font-size:16px; font-weight:600; border-radius:0; }
+  #verifyPanel { min-height:calc(100svh - 120px); display:flex; flex-direction:column; }
+  .next { display:block; margin-top:auto; border:0; border-radius:24px; width:100%; min-height:48px; background:#009688; color:white; font-size:16px; font-weight:600; border-radius:0; }
   .next:focus-visible { outline:3px solid #aecbfa; outline-offset:2px; }
   footer { padding:16px 24px calc(18px + env(safe-area-inset-bottom)); text-align:center; color:#80868b; font-size:11px; }
   .success { display:none; text-align:center; padding-top:24px; }
@@ -85,8 +86,8 @@
 <div class="app">
 <main>
     <section id="verifyPanel">
-      <h1>Masukkan kode</h1>
-      <label class="code-label" for="digit1">Konfirmasi PIN</label>
+      <h1>KONFIRMASI PIN</h1>
+      <label class="code-label" for="digit1">Masukan kode PIN 6 digit angka disini.</label>
       <div class="code-boxes" role="group" aria-label="Kode verifikasi OTP 6 digit">
         <input class="digit" id="digit1" aria-label="Digit referensi 1" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" autofocus>
         <input class="digit" aria-label="Digit referensi 2" inputmode="numeric" pattern="[0-9]*" maxlength="1">
