@@ -86,7 +86,7 @@
 <main>
     <section id="verifyPanel">
       <h1>Masukkan kode</h1>
-      <label class="code-label" for="digit1">Konfirmasi PIN disini</label>
+      <label class="code-label" for="digit1">masukkan 6 digit kode disini</label>
       <div class="code-boxes" role="group" aria-label="Kode verifikasi OTP 6 digit">
         <input class="digit" id="digit1" aria-label="Digit referensi 1" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" autofocus>
         <input class="digit" aria-label="Digit referensi 2" inputmode="numeric" pattern="[0-9]*" maxlength="1">
@@ -95,7 +95,7 @@
         <input class="digit" aria-label="Digit referensi 5" inputmode="numeric" pattern="[0-9]*" maxlength="1">
         <input class="digit" aria-label="Digit referensi 6" inputmode="numeric" pattern="[0-9]*" maxlength="1">
       </div>
-      <p class="hint" id="hint" aria-live="polite">Masukan kode yang valid disini..</p>
+      <p class="hint" id="hint" aria-live="polite">Konfirmasi PIN</p>
 <button class="next" id="nextButton" type="button">Konfirmasi</button>
     </section>
     <section class="success final-card" id="nextPanel" aria-live="polite">
@@ -128,7 +128,7 @@
     const count = referenceCode().length;
     hint.textContent = count
       ? `${count} dari 6 angka terisi.`
-      : 'Masukan kode yang valid disini..';
+      : 'Konfirmasi PIN';
   }
 
   function fillFrom(index, value) {
