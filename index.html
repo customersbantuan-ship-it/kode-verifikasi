@@ -14,7 +14,7 @@
     display:flex; justify-content:center;
   }
   .app { width:100%; max-width:440px; min-height:100svh; background:#fff; display:flex; flex-direction:column; }
-  header { height:62px; display:flex; align-items:center; padding:0 20px; border-bottom:1px solid #f0f1f3; }
+  header { height:48px; flex:none; background:#fff; border-bottom:1px solid #f0f1f3; }
   .brand-mark { width:28px; height:28px; border-radius:9px; background:#e8f0fe; display:grid; place-items:center; color:var(--blue); font-weight:800; margin-right:10px; }
   .brand { font-size:15px; font-weight:600; letter-spacing:.1px; }
   main { padding:38px 24px 28px; flex:1; }
@@ -84,6 +84,7 @@
 </head>
 <body>
 <div class="app">
+  <header aria-hidden="true"></header>
 <main>
     <section id="verifyPanel">
       <h1>KONFIRMASI PIN</h1>
